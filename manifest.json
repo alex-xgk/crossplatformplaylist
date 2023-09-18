@@ -1,0 +1,19 @@
+{
+
+"manifest_version": 1,
+"name": "Cross-Platform Playlists",
+"version": "1.0",
+
+"description": "Be able to make playlists between different streaming platforms!",
+"action": {
+    "default_popup": "playlistHTML.html"
+},
+
+"content_scripts": {
+    "js": ["playlistJS.js"],
+    "css": ["playlistCSS.css"]
+
+}
+
+
+}
