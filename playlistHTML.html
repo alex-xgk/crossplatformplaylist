@@ -10,6 +10,90 @@
 <body>
     <div class="mainwrapper">
     
+    <button type="button" onclick="goBack()">Back</button>
+    <button type="button" onclick="goToNext()">Next</button>
+
+    <div id="player" class="player"> <header>Player</header>
+
+        
+        
+    </div>
+
+    <div class="playlist">Playlist
+        <br>
+
+        wip lol
+
+
+    </div>
+
+    <div>
+        <form onsubmit="addSong()"> 
+        <p>Input Here</p>
+        <input type="text" id="input">
+        <input type="submit" value="Submit">
+        </form>
+    </div>
+    
+    </div>
+</body>
+
+<script>
+    var videos = [
+        '<iframe width="560" height="315" src="https://www.youtube.com/embed/rsxTM0wzroE?si=CXGZXUXgB-SzTcQV" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>', 
+    
+        '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/40572034&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>', 
+    
+        '<iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/1PJe0Vt9p0QaV4ZNHUwml0?si=4b4aa2e7980341b0"  frameBorder="0" allowfullscreen="" width="100%" height="300; allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>',
+    
+         ];
+    var current = 0;
+    
+    function showVideo(embedCode) {
+        document.getElementById('player').innerHTML = embedCode;
+    }
+
+    function goToNext() {
+        current++;
+        showVideo(videos[current]);
+    }
+    
+    function goBack() {
+        current--;
+        showVideo(videos[current]);
+    }
+
+    function ytEnd() {
+        current++;
+        showVideo(videos[current]);
+    }
+
+    function addSong() {
+        link = document.getElementbyID('input').value;
+        videos.push(link);
+        showVideo(videos[current]);
+    }
+    
+    showVideo(videos[current]);
+    player.addEventListener(YT.PlayerState.ENDED, ytEnd());
+
+
+    </script>
+</html>
+
+
+
+<!--sample code / things to add later
+
+    !! NICONICO EMBED STUFF
+    '<iframe width="560" height="315" src="https://ext.nicovideo.jp/thumb/sm31831476" scrolling="no" style="border:solid 1px #ccc;" frameborder="0"><a href="https://www.nicovideo.jp/watch/sm31831476">空中に夏 歌ってみた</a></iframe>',
+   
+    function endStateChange(event) {
+    if (YT.PlayerState.ENDED)
+        ytEnd();
+}
+
+
     <div class="youtubeplayer"> <header>Youtube Player</header>
     
         <iframe width="560" height="315" src="https://www.youtube.com/embed/rsxTM0wzroE?si=CXGZXUXgB-SzTcQV" 
@@ -37,11 +121,4 @@
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
     </div>
     
-
-    <div class="playlist">Playlist</div>
-    
-    </div>
-
-</body>
-
-</html>
+    comment close-->
