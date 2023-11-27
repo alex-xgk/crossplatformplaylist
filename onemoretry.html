@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Player</title>
+</head>
+<body>
+
+<div id="player"></div>
+
+<form id="mediaForm">
+    <label for="platform">Platform:</label>
+    <select id="platform" required>
+        <option value="youtube">YouTube</option>
+        <option value="soundcloud">SoundCloud</option>
+    </select>
+    <label for="embedCode">Embed Code:</label>
+    <input type="text" id="embedCode" required>
+    <button type="button" onclick="addMedia()">Add Media</button>
+</form>
+
+<script>
+
+// Single array to hold videos with platform and embedding information
+const videos = [
+    ['youtube', '2SYVZ6ylaQQ'],
+    ['soundcloud', 'https://soundcloud.com/plasterbrain/nimbasa-core'],
+    ['youtube', 'YOUTUBE_VIDEO_ID_2'],
+    ['soundcloud', 'https://soundcloud.com/artist/track2']
+];
+
+let currentMediaIndex = 0;
+let player;
+
+// Load the YouTube API script asynchronously
+const youtubeScript = document.createElement('script');
+youtubeScript.src = 'https://www.youtube.com/iframe_api';
+document.head.appendChild(youtubeScript);
+
+// Load the SoundCloud Widget API script asynchronously
+const soundcloudScript = document.createElement('script');
+soundcloudScript.src = 'https://w.soundcloud.com/player/api.js';
+document.head.appendChild(soundcloudScript);
+
+// Callback function called when the YouTube API script is loaded
+function onYouTubeIframeAPIReady() {
+    loadMedia();
+}
+
+// Callback function called when the SoundCloud Widget API script is loaded
+function onSoundCloudAPIReady() {
+    loadMedia();
+}
+
+// Load and play the current media
+function loadMedia() {
+    const [platform, embedInfo] = videos[currentMediaIndex];
+
+    if (platform === 'youtube') {
+        loadYouTubeVideo(embedInfo);
+    } else if (platform === 'soundcloud') {
+        loadSoundCloudTrack(embedInfo);
+    }
+}
+
+// Load the YouTube video
+function loadYouTubeVideo(videoId) {
+    player = new YT.Player('player', {
+        height: '360',
+        width: '640',
+        videoId: videoId,
+        playerVars: {
+            'autoplay': 0,
+            'controls': 1,
+            'rel': 0,
+            'showinfo': 0
+        },
+        events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+        }
+    });
+}
+
+// Load the SoundCloud track
+function loadSoundCloudTrack(trackUrl) {
+    const iframe = document.createElement('iframe');
+    iframe.width = '640';
+    iframe.height = '166';
+    iframe.scrolling = 'no';
+    iframe.frameborder = 'no';
+    iframe.allow = 'autoplay';
+    iframe.src = `https://w.soundcloud.com/player/?url=${encodeURIComponent(trackUrl)}&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true`;
+    document.getElementById('player').innerHTML = '';
+    document.getElementById('player').appendChild(iframe);
+
+    // Create the SoundCloud player
+    player = SC.Widget(iframe);
+
+    // Add event listener for the "finish" event
+    player.bind(player.PLAY, function () {
+        // Pause and seek to the end when the SoundCloud track starts playing to simulate the "finish" event
+        player.pause();
+        player.seekTo(player.getDuration());
+    });
+
+    player.bind(player.FINISH, function () {
+        // SoundCloud track has finished, move to the next media
+        currentMediaIndex = (currentMediaIndex + 1) % videos.length;
+        loadMedia();
+    });
+}
+
+// Callback function called when the player is ready
+function onPlayerReady(event) {
+    // You can do something when the player is ready
+    console.log('Player is ready');
+}
+
+// Callback function called when the player's state changes
+function onPlayerStateChange(event) {
+    if (event.data === YT.PlayerState.ENDED) {
+        // YouTube video has ended, move to the next media
+        currentMediaIndex = (currentMediaIndex + 1) % videos.length;
+        loadMedia();
+    }
+    if (event.data === YT.PlayerState.ENDED) {
+            // YouTube video has ended, log a console alert
+            console.log('YouTube video has ended');
+    }
+    
+}
+
+// Function to add media to the array
+function addMedia() {
+    const platform = document.getElementById('platform').value;
+    const embedCode = document.getElementById('embedCode').value.trim();
+
+    // Add the new media to the videos array
+    videos.push([platform, embedCode]);
+
+    // Load and play the newly added media if it's the only one
+    if (videos.length === 1) {
+        loadMedia();
+    }
+}
+</script>
+
+</body>
+</html>
